@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taber.js - Lightweight Tab Library</title>
+    <!-- Demo page CSS -->
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+    <!-- Header Banner -->
+    <header class="header">
+        <a href="https://github.com/ThanhWii/taber" target="_blank" class="github-link" title="View on GitHub">
+            <svg viewBox="0 0 16 16" width="36" height="36" fill="currentColor">
+                <path
+                    d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+                </path>
+            </svg>
+        </a>
+        <h1 class="header__title">Taber.js</h1>
+        <p class="header__subtitle">A lightweight and simple tab library built with pure JavaScript ES6.</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <section class="section">
+            <div class="section__heading">
+                <span class="section__number">1</span>
+                <h2 class="section__title">Try It Out</h2>
+            </div>
+
+            <p class="section__desc">
+                Taber is a lightweight <strong>tab library</strong> built with pure JavaScript ES6.
+                (<a href="https://github.com/ThanhWii/taber" target="_blank">Source code available on GitHub</a>)
+            </p>
+
+            <ul class="feature-list">
+                <li>No dependencies</li>
+                <li>Fully customizable with CSS (Zero extra CSS files needed)</li>
+                <li>Supports URL state persistence</li>
+                <li>Simple and intuitive API</li>
+                <li>Lightweight and optimized</li>
+            </ul>
+
+            <p class="section__desc">Here are some examples of how to use Taber:</p>
+
+            <!-- ================= 1. BASIC TABS DEMO ================= -->
+            <div class="demo-block">
+                <h3 class="demo-block__title">1. Basic Tabs Demo</h3>
+
+                <ul id="basic-tabs" class="tabs-list">
+                    <li><a href="#basic-1">Tab 1</a></li>
+                    <li><a href="#basic-2">Tab 2</a></li>
+                    <li><a href="#basic-3">Tab 3</a></li>
+                    <li><a href="#basic-4">Tab 4</a></li>
+                </ul>
+
+                <div class="tabs-panels">
+                    <div id="basic-1" class="tabs-panel">
+                        Welcome to Tab 1! This is the first tab.
+                    </div>
+                    <div id="basic-2" class="tabs-panel">
+                        Here is the content for Tab 2. Switching is instant and smooth!
+                    </div>
+                    <div id="basic-3" class="tabs-panel">
+                        This is Tab 3 content. Built with modern ES6+ classes and private fields.
+                    </div>
+                    <div id="basic-4" class="tabs-panel">
+                        You have reached Tab 4! No external dependencies or CSS files required.
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= 2. PERSISTENT TABS DEMO ================= -->
+            <div class="demo-block">
+                <h3 class="demo-block__title">2. Persistent Tabs Demo</h3>
+
+                <ul id="persistent-tabs" class="tabs-list">
+                    <li><a href="#news">News</a></li>
+                    <li><a href="#sports">Sports</a></li>
+                    <li><a href="#tech">Tech</a></li>
+                    <li><a href="#lifestyle">Lifestyle</a></li>
+                </ul>
+
+                <div class="tabs-panels">
+                    <div id="news" class="tabs-panel">
+                        Latest news updates from around the world. (Try switching tabs and refreshing the page — the
+                        active tab persists in the URL!)
+                    </div>
+                    <div id="sports" class="tabs-panel">
+                        Highlights, live scores, and breaking sports coverage from major leagues.
+                    </div>
+                    <div id="tech" class="tabs-panel">
+                        Explore the latest trends in JavaScript, web development, and software engineering.
+                    </div>
+                    <div id="lifestyle" class="tabs-panel">
+                        Tips on daily wellness, minimalist setups, photography, and work-life balance.
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= 3. API & CALLBACK DEMO ================= -->
+            <div class="demo-block">
+                <h3 class="demo-block__title">3. Programmatic API & Callback Demo</h3>
+
+                <ul id="api-tabs" class="tabs-list">
+                    <li><a href="#api-1">Overview</a></li>
+                    <li><a href="#api-2">Features</a></li>
+                    <li><a href="#api-3">Settings</a></li>
+                </ul>
+
+                <div class="tabs-panels">
+                    <div id="api-1" class="tabs-panel">
+                        Use the buttons below to control this tab group programmatically via <code>.switch()</code> and
+                        <code>.destroy()</code>.
+                    </div>
+                    <div id="api-2" class="tabs-panel">
+                        The <code>onChange</code> callback logs the active tab and panel below whenever you switch tabs.
+                    </div>
+                    <div id="api-3" class="tabs-panel">
+                        Settings panel activated! Check the status box below for callback output.
+                    </div>
+                </div>
+
+                <div class="demo-actions">
+                    <button id="btn-switch-2" class="demo-btn">Switch to "Features"</button>
+                    <button id="btn-switch-3" class="demo-btn">Switch to "Settings"</button>
+                    <button id="btn-destroy" class="demo-btn demo-btn--danger">Destroy Instance</button>
+                </div>
+                <p id="callback-log" class="callback-log">Callback status: Waiting for tab change...</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Embed Taber.js -->
+    <script src="./taber.min.js"></script>
+
+    <!-- Tab Demo -->
+    <script>
+        // 1. Basic Tabs
+        const basicTabs = new Taber('#basic-tabs');
+
+        // 2. Persistent Tabs (Luu trang thai tren URL voi remember: true)
+        const persistentTabs = new Taber('#persistent-tabs', {
+            remember: true
+        });
+
+        // 3. API & Callback Tabs
+        const logElement = document.querySelector('#callback-log');
+        const apiTabs = new Taber('#api-tabs', {
+            remember: true,
+            onChange: ({ tab, panel }) => {
+                logElement.innerHTML = `Callback triggered: Active tab is <strong>${tab.textContent}</strong> (Panel ID: <code>#${panel.id}</code>)`;
+            }
+        });
+
+        document.querySelector('#btn-switch-2').onclick = () => {
+            apiTabs.switch('#api-2');
+        };
+
+        document.querySelector('#btn-switch-3').onclick = () => {
+            apiTabs.switch('#api-3');
+        };
+
+        document.querySelector('#btn-destroy').onclick = () => {
+            apiTabs.destroy();
+            logElement.innerHTML = `Instance destroyed! All panels are unhidden and event listeners are removed.`;
+        };
+    </script>
+</body>
+
+</html>
