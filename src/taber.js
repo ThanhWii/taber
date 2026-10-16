@@ -32,22 +32,20 @@ class Taber {
 
     // Private methods
     #init() {
-        const tabActive = this.#tabs[0];
-        tabActive.closest('li').classList.add('taber--active');
-        this.#panels.forEach((panel) => {
-            panel.hidden = true;
-        });
+        this.#activeTab(this.#tabs[0]);
         this.#tabs.forEach((tab) => {
             tab.onclick = (event) => {
                 this.#handleTabClick(event, tab);
             }
-        })
-        const panelActive = this.#panels[0];
-        panelActive.hidden = false;
+        });
     }
 
     #handleTabClick(event, tab) {
         event.preventDefault();
+        this.#activeTab(tab);
+    }
+
+    #activeTab(tab) {
         this.#tabs.forEach((tab) => {
             tab.closest('li').classList.remove('taber--active');
         });
