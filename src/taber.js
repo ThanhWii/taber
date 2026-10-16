@@ -3,10 +3,12 @@ class Taber {
     #container; // The ul
     #tabs;  // The a
     #panels;    // The div
+    #opt;   // Options
     #originalHTML;
+    #paramKey;
 
     // Taber constructor
-    constructor(selector) {
+    constructor(selector, options = {}) {
         this.#container = document.querySelector(selector);
         if (!this.#container) {
             console.error(`Taber: No containers found for selector '${selector}'.`);
@@ -25,16 +27,21 @@ class Taber {
             return panel;
         }).filter(Boolean);
         if (this.#tabs.length !== this.#panels.length) return;
+        this.#opt = {
+            remember: false,
+            ...options
+        }
+        this.#paramKey = selector.replace(/[^a-zA-Z0-9]/g, '');
         this.#originalHTML = this.#container.innerHTML;
         this.#init();
     }
 
-    // Private static methods
-
-
     // Private methods
     #init() {
-        this.#activeTab(this.#tabs[0]);
+        const params = new URLSearchParams(location.search);
+        const tabSelector = params.get(this.#paramKey);
+        const tabToActive = (this.#opt.remember && tabSelector && this.#tabs.find((tab) => tab.getAttribute('href').replace(/[^a-zA-Z0-9]/g, '') === tabSelector)) || this.#tabs[0];
+        this.#activateTab(tabToActive);
         this.#tabs.forEach((tab) => {
             tab.onclick = (event) => {
                 this.#handleTabClick(event, tab);
@@ -44,10 +51,10 @@ class Taber {
 
     #handleTabClick(event, tab) {
         event.preventDefault();
-        this.#activeTab(tab);
+        this.#activateTab(tab);
     }
 
-    #activeTab(tab) {
+    #activateTab(tab) {
         this.#tabs.forEach((tab) => {
             tab.closest('li').classList.remove('taber--active');
         });
@@ -57,6 +64,13 @@ class Taber {
         });
         const panelActive = document.querySelector(tab.getAttribute('href'));
         panelActive.hidden = false;
+
+        if (this.#opt.remember) {
+            const params = new URLSearchParams(location.search);
+            const paramsValue = tab.getAttribute('href').replace(/[^a-zA-Z0-9]/g, '');
+            params.set(this.#paramKey, paramsValue);
+            history.replaceState(null, null, `?${params}`);
+        }
     }
 
     // API
@@ -78,7 +92,7 @@ class Taber {
             console.error(`Taber: Invalid input '${input}'.`);
             return;
         }
-        this.#activeTab(tabToActive);
+        this.#activateTab(tabToActive);
     }
 
     destroy() {
