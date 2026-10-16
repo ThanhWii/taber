@@ -8,7 +8,7 @@ class Taber {
     constructor(selector) {
         this.#container = document.querySelector(selector);
         if (!this.#container) {
-            console.error(`Taber: No container found for selector '${selector}'.`);
+            console.error(`Taber: No containers found for selector '${selector}'.`);
             return;
         }
         this.#tabs = Array.from(this.#container.querySelectorAll("li a"));
@@ -55,5 +55,27 @@ class Taber {
         });
         const panelActive = document.querySelector(tab.getAttribute('href'));
         panelActive.hidden = false;
+    }
+
+    // API
+    switch(input) {
+        let tabToActive = null;
+        if (typeof input === 'string') {
+            tabToActive = this.#tabs.find((tab) => {
+                return tab.getAttribute('href') === input;
+            });
+            if (!tabToActive) {
+                console.error(`Taber: No tabs found for selector '${input}'.`);
+                return;
+            }
+        }
+        else if (this.#tabs.includes(input)) {
+            tabToActive = input
+        }
+        if (!tabToActive) {
+            console.error(`Taber: Invalid input '${input}'.`);
+            return;
+        }
+        this.#activeTab(tabToActive);
     }
 }
