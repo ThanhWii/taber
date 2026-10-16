@@ -1,8 +1,9 @@
 class Taber {
-    // Taber properties
+    // Taber private properties
     #container; // The ul
     #tabs;  // The a
     #panels;    // The div
+    #originalHTML;
 
     // Taber constructor
     constructor(selector) {
@@ -24,6 +25,7 @@ class Taber {
             return panel;
         }).filter(Boolean);
         if (this.#tabs.length !== this.#panels.length) return;
+        this.#originalHTML = this.#container.innerHTML;
         this.#init();
     }
 
@@ -77,5 +79,15 @@ class Taber {
             return;
         }
         this.#activeTab(tabToActive);
+    }
+
+    destroy() {
+        this.#container.innerHTML = this.#originalHTML;
+        this.#panels.forEach((panel) => {
+            panel.hidden = false;
+        });
+        this.#container = null;
+        this.#tabs = null;
+        this.#panels = null;
     }
 }
