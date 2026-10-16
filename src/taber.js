@@ -44,7 +44,7 @@ class Taber {
         const tabSelector = params.get(this.#paramKey);
         const tabToActive = (this.#opt.remember && tabSelector && this.#tabs.find((tab) => tab.getAttribute('href').replace(/[^a-zA-Z0-9]/g, '') === tabSelector)) || this.#tabs[0];
         this.#currentTab = tabToActive;
-        this.#activateTab(tabToActive, false);
+        this.#activateTab(tabToActive, false, false);
         this.#tabs.forEach((tab) => {
             tab.onclick = (event) => {
                 this.#handleTabClick(event, tab);
@@ -57,7 +57,7 @@ class Taber {
         this.#tryActivateTab(tab);
     }
 
-    #activateTab(tab, triggerOnChange = true) {
+    #activateTab(tab, triggerOnChange = true, updateURL = this.#opt.remember) {
         this.#tabs.forEach((tab) => {
             tab.closest('li').classList.remove('taber--active');
         });
@@ -68,7 +68,7 @@ class Taber {
         const panelActive = document.querySelector(tab.getAttribute('href'));
         panelActive.hidden = false;
 
-        if (this.#opt.remember) {
+        if (updateURL) {
             const params = new URLSearchParams(location.search);
             const paramsValue = tab.getAttribute('href').replace(/[^a-zA-Z0-9]/g, '');
             params.set(this.#paramKey, paramsValue);
