@@ -1,14 +1,15 @@
 class Taber {
-    // Taber properties
+    // Taber private properties
     #container; // The ul
     #tabs;  // The a
     #panels;    // The div
+    #originalHTML;
 
     // Taber constructor
     constructor(selector) {
         this.#container = document.querySelector(selector);
         if (!this.#container) {
-            console.error(`Taber: No container found for selector '${selector}'.`);
+            console.error(`Taber: No containers found for selector '${selector}'.`);
             return;
         }
         this.#tabs = Array.from(this.#container.querySelectorAll("li a"));
@@ -24,6 +25,7 @@ class Taber {
             return panel;
         }).filter(Boolean);
         if (this.#tabs.length !== this.#panels.length) return;
+        this.#originalHTML = this.#container.innerHTML;
         this.#init();
     }
 
@@ -32,22 +34,20 @@ class Taber {
 
     // Private methods
     #init() {
-        const tabActive = this.#tabs[0];
-        tabActive.closest('li').classList.add('taber--active');
-        this.#panels.forEach((panel) => {
-            panel.hidden = true;
-        });
+        this.#activeTab(this.#tabs[0]);
         this.#tabs.forEach((tab) => {
             tab.onclick = (event) => {
                 this.#handleTabClick(event, tab);
             }
-        })
-        const panelActive = this.#panels[0];
-        panelActive.hidden = false;
+        });
     }
 
     #handleTabClick(event, tab) {
         event.preventDefault();
+        this.#activeTab(tab);
+    }
+
+    #activeTab(tab) {
         this.#tabs.forEach((tab) => {
             tab.closest('li').classList.remove('taber--active');
         });
@@ -57,5 +57,37 @@ class Taber {
         });
         const panelActive = document.querySelector(tab.getAttribute('href'));
         panelActive.hidden = false;
+    }
+
+    // API
+    switch(input) {
+        let tabToActive = null;
+        if (typeof input === 'string') {
+            tabToActive = this.#tabs.find((tab) => {
+                return tab.getAttribute('href') === input;
+            });
+            if (!tabToActive) {
+                console.error(`Taber: No tabs found for selector '${input}'.`);
+                return;
+            }
+        }
+        else if (this.#tabs.includes(input)) {
+            tabToActive = input
+        }
+        if (!tabToActive) {
+            console.error(`Taber: Invalid input '${input}'.`);
+            return;
+        }
+        this.#activeTab(tabToActive);
+    }
+
+    destroy() {
+        this.#container.innerHTML = this.#originalHTML;
+        this.#panels.forEach((panel) => {
+            panel.hidden = false;
+        });
+        this.#container = null;
+        this.#tabs = null;
+        this.#panels = null;
     }
 }
