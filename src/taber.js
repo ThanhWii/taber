@@ -1,10 +1,11 @@
 class Taber {
     // Taber private properties
-    #container; // The ul
-    #tabs;  // The a
-    #panels;    // The div
-    #currentTab;    // Tab hien tai dang mo
-    #opt;   // Options
+    static #cleanRegex = /[^a-zA-Z0-9]/g;
+    #container;
+    #tabs;
+    #panels;
+    #currentTab;
+    #opt;
     #originalHTML;
     #paramKey;
 
@@ -20,20 +21,15 @@ class Taber {
             console.error(`Taber: No tabs found inside the container.`);
             return;
         }
-        this.#panels = this.#tabs.map((tab) => {
-            const panel = document.querySelector(tab.getAttribute('href'));
-            if (!panel) {
-                console.error(`Taber: No panels found for selector '${tab.getAttribute('href')}'.`);
-            }
-            return panel;
-        }).filter(Boolean);
+        this.#panels = this.#getPanels();
         if (this.#tabs.length !== this.#panels.length) return;
         this.#opt = {
             remember: false,
             onChange: null,
+            activeClassName: 'taber--active',
             ...options
         }
-        this.#paramKey = selector.replace(/[^a-zA-Z0-9]/g, '');
+        this.#paramKey = selector.replace(Taber.#cleanRegex, '');
         this.#originalHTML = this.#container.innerHTML;
         this.#init();
     }
@@ -42,37 +38,33 @@ class Taber {
     #init() {
         const params = new URLSearchParams(location.search);
         const tabSelector = params.get(this.#paramKey);
-        const tabToActive = (this.#opt.remember && tabSelector && this.#tabs.find((tab) => tab.getAttribute('href').replace(/[^a-zA-Z0-9]/g, '') === tabSelector)) || this.#tabs[0];
+        const tabToActive = (this.#opt.remember && tabSelector && this.#tabs.find((tab) => tab.getAttribute('href').replace(Taber.#cleanRegex, '') === tabSelector)) || this.#tabs[0];
         this.#currentTab = tabToActive;
-        this.#activateTab(tabToActive, false);
+        this.#activateTab(tabToActive, false, false);
         this.#tabs.forEach((tab) => {
             tab.onclick = (event) => {
-                this.#handleTabClick(event, tab);
+                event.preventDefault();
+                this.#tryActivateTab(tab);
             }
         });
     }
 
-    #handleTabClick(event, tab) {
-        event.preventDefault();
-        this.#tryActivateTab(tab);
-    }
-
-    #activateTab(tab, triggerOnChange = true) {
+    #activateTab(tab, triggerOnChange = true, updateURL = this.#opt.remember) {
         this.#tabs.forEach((tab) => {
-            tab.closest('li').classList.remove('taber--active');
+            tab.closest('li').classList.remove(this.#opt.activeClassName);
         });
-        tab.closest('li').classList.add('taber--active');
+        tab.closest('li').classList.add(this.#opt.activeClassName);
         this.#panels.forEach((panel) => {
             panel.hidden = true;
         });
         const panelActive = document.querySelector(tab.getAttribute('href'));
         panelActive.hidden = false;
 
-        if (this.#opt.remember) {
+        if (updateURL) {
             const params = new URLSearchParams(location.search);
-            const paramsValue = tab.getAttribute('href').replace(/[^a-zA-Z0-9]/g, '');
+            const paramsValue = tab.getAttribute('href').replace(Taber.#cleanRegex, '');
             params.set(this.#paramKey, paramsValue);
-            history.replaceState(null, null, `?${params}`);
+            history.replaceState(null, null, `?${params}${location.hash}`);
         }
 
         if (triggerOnChange && typeof this.#opt.onChange === 'function') {
@@ -87,8 +79,19 @@ class Taber {
         }
     }
 
+    #getPanels() {
+        return this.#tabs.map((tab) => {
+            const panel = document.querySelector(tab.getAttribute('href'));
+            if (!panel) {
+                console.error(`Taber: No panels found for selector '${tab.getAttribute('href')}'.`);
+            }
+            return panel;
+        }).filter(Boolean);
+    }
+
     // API
     switch(input) {
+        if (!this.#container) return;
         let tabToActive = null;
         if (typeof input === 'string') {
             tabToActive = this.#tabs.find((tab) => {
@@ -110,6 +113,7 @@ class Taber {
     }
 
     destroy() {
+        if (!this.#container) return;
         this.#container.innerHTML = this.#originalHTML;
         this.#panels.forEach((panel) => {
             panel.hidden = false;
