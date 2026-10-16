@@ -3,6 +3,7 @@ class Taber {
     #container; // The ul
     #tabs;  // The a
     #panels;    // The div
+    #currentTab;    // Tab hien tai dang mo
     #opt;   // Options
     #originalHTML;
     #paramKey;
@@ -29,6 +30,7 @@ class Taber {
         if (this.#tabs.length !== this.#panels.length) return;
         this.#opt = {
             remember: false,
+            onChange: null,
             ...options
         }
         this.#paramKey = selector.replace(/[^a-zA-Z0-9]/g, '');
@@ -41,7 +43,8 @@ class Taber {
         const params = new URLSearchParams(location.search);
         const tabSelector = params.get(this.#paramKey);
         const tabToActive = (this.#opt.remember && tabSelector && this.#tabs.find((tab) => tab.getAttribute('href').replace(/[^a-zA-Z0-9]/g, '') === tabSelector)) || this.#tabs[0];
-        this.#activateTab(tabToActive);
+        this.#currentTab = tabToActive;
+        this.#activateTab(tabToActive, false);
         this.#tabs.forEach((tab) => {
             tab.onclick = (event) => {
                 this.#handleTabClick(event, tab);
@@ -51,10 +54,10 @@ class Taber {
 
     #handleTabClick(event, tab) {
         event.preventDefault();
-        this.#activateTab(tab);
+        this.#tryActivateTab(tab);
     }
 
-    #activateTab(tab) {
+    #activateTab(tab, triggerOnChange = true) {
         this.#tabs.forEach((tab) => {
             tab.closest('li').classList.remove('taber--active');
         });
@@ -70,6 +73,17 @@ class Taber {
             const paramsValue = tab.getAttribute('href').replace(/[^a-zA-Z0-9]/g, '');
             params.set(this.#paramKey, paramsValue);
             history.replaceState(null, null, `?${params}`);
+        }
+
+        if (triggerOnChange && typeof this.#opt.onChange === 'function') {
+            this.#opt.onChange({ tab, panel: panelActive });
+        }
+    }
+
+    #tryActivateTab(tab) {
+        if (tab !== this.#currentTab) {
+            this.#currentTab = tab;
+            this.#activateTab(tab);
         }
     }
 
@@ -92,7 +106,7 @@ class Taber {
             console.error(`Taber: Invalid input '${input}'.`);
             return;
         }
-        this.#activateTab(tabToActive);
+        this.#tryActivateTab(tabToActive);
     }
 
     destroy() {
@@ -103,5 +117,6 @@ class Taber {
         this.#container = null;
         this.#tabs = null;
         this.#panels = null;
+        this.#currentTab = null;
     }
 }
