@@ -29,6 +29,7 @@ class Taber {
         if (this.#tabs.length !== this.#panels.length) return;
         this.#opt = {
             remember: false,
+            onChange: null,
             ...options
         }
         this.#paramKey = selector.replace(/[^a-zA-Z0-9]/g, '');
@@ -70,6 +71,10 @@ class Taber {
             const paramsValue = tab.getAttribute('href').replace(/[^a-zA-Z0-9]/g, '');
             params.set(this.#paramKey, paramsValue);
             history.replaceState(null, null, `?${params}`);
+        }
+
+        if (typeof this.#opt.onChange === 'function') {
+            this.#opt.onChange({ tab, panel: panelActive });
         }
     }
 
