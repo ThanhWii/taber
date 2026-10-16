@@ -3,10 +3,11 @@ class Taber {
     #container; // The ul
     #tabs;  // The a
     #panels;    // The div
+    #opt;   // Options
     #originalHTML;
 
     // Taber constructor
-    constructor(selector) {
+    constructor(selector, options = {}) {
         this.#container = document.querySelector(selector);
         if (!this.#container) {
             console.error(`Taber: No containers found for selector '${selector}'.`);
@@ -25,16 +26,18 @@ class Taber {
             return panel;
         }).filter(Boolean);
         if (this.#tabs.length !== this.#panels.length) return;
+        this.#opt = {
+            remember: false,
+            ...options
+        }
         this.#originalHTML = this.#container.innerHTML;
         this.#init();
     }
 
-    // Private static methods
-
-
     // Private methods
     #init() {
-        this.#activeTab(this.#tabs[0]);
+        const tabToActive = (this.#opt.remember && location.hash && this.#tabs.find((tab) => tab.getAttribute('href') === location.hash)) || this.#tabs[0];
+        this.#activateTab(tabToActive);
         this.#tabs.forEach((tab) => {
             tab.onclick = (event) => {
                 this.#handleTabClick(event, tab);
@@ -44,10 +47,10 @@ class Taber {
 
     #handleTabClick(event, tab) {
         event.preventDefault();
-        this.#activeTab(tab);
+        this.#activateTab(tab);
     }
 
-    #activeTab(tab) {
+    #activateTab(tab) {
         this.#tabs.forEach((tab) => {
             tab.closest('li').classList.remove('taber--active');
         });
@@ -57,6 +60,8 @@ class Taber {
         });
         const panelActive = document.querySelector(tab.getAttribute('href'));
         panelActive.hidden = false;
+
+        history.replaceState(null, null, tab.getAttribute('href'));
     }
 
     // API
@@ -78,7 +83,7 @@ class Taber {
             console.error(`Taber: Invalid input '${input}'.`);
             return;
         }
-        this.#activeTab(tabToActive);
+        this.#activateTab(tabToActive);
     }
 
     destroy() {
